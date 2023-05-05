@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'base/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Todo app by Nam</title>
+</head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var textareas = document.querySelectorAll("textarea.auto-expand");
+    
+      function autoExpand() {
+        this.style.height = this.scrollHeight + 'px';
+      }
+    
+      textareas.forEach(function(textarea) {
+        textarea.addEventListener("input", autoExpand);
+      });
+    });
+</script>
+
+
+<body>
+    <div class="container group">
+        {% include 'header.html' %}
+        <form action="" method="post">
+            {% csrf_token %}
+            {% for field in atform %}
+                <p class="addtask-label">{{field.label}}</p>
+                {{field}}
+            {% endfor %}
+            <button type="submit" class="submit-button">Add</button>
+        </form>
+        <h1>Your currently todo</h1>
+        {% if request.user.is_authenticated %}
+            {% if task %}
+                {% for i in task %}
+                    <div class="todo-container group">
+                        <div class="unfinish-icon"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                        <div class="todo-date ">{{i.created}}</div>
+                        <div class="todo-name">{{i.todo}}</div>
+                        <form><button class="action-button" type="submit" name="done" value="{{i.id}}">Done!!</button></form>
+                        <a class="action-button" href="{% url 'edit' i.id %}">Edit</a>
+                        <form><button class="action-button" type="submit" name="delete" value="{{i.id}}">Delete</button></form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                    <p class="annouce">You haven't add any task yet!!</p>
+            {% endif %}
+            <h1>Your completed task</h1>
+            {% if done_task %}
+                {% for i in done_task %}
+                <div class="todo-container group">
+                    <div class="finish-icon"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div>
+                    <div class="todo-date">{{i.created}}</div>
+                    <div class="todo-name">{{i.todo}}</div>
+                    <form><button class="action-button" type="submit" name="undone" value="{{i.id}}">Undone</button></form>
+                    <form><button class="action-button" type="submit" name="delete" value="{{i.id}}">Delete</button></form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="annouce bottom">You haven't done any task yet!!</p>
+            {% endif %}
+        {% else %}
+            <p class="annouce bottom">You haven't login yet, please login!</p>
+        {% endif %}
+    </div>
+</body>
+</html>

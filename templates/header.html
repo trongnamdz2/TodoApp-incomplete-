@@ -1,0 +1,15 @@
+<header class="group">
+    <nav>
+        <ul>
+            <li><p class="logo">Logo</p></li>
+            <li><a href="{% url 'home' %}" class="func-button">Home</a></li>
+            {% if request.user.is_authenticated %}
+                <li class="welcome-user">Welcome, {{request.user}}</li>
+                <li><a href="{% url 'logout' %}" class="func-button">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}" class="func-button">Login</a></li>
+                <li><a href="{% url 'register' %}" class="func-button">Sign up</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
